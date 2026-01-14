@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 
 import streamlit as st
+from select import error
 
 from pages.HomeworkBot import api_key
 
@@ -16,10 +17,21 @@ def sendMessage(text,history=[]):
     for model in all_models:
         client = st.session_state.client
         try:
-            chat = client.chat.create(
+            chat = client.chats.create(
                 model=model
             )
-        except:
+
+            ai = chat.send_message(text)
+            print(ai.text)
+            return ai.text
+        except Exception as e:
+            error = str(e)
+            print(e)
+            if "429" in error:
+                st.error("נסה שוב מחר")
+                return
+            if "503" in error:
+                st.info(f"נסה בפעם אחרת")
             print(f"{model} not working...")
 
 

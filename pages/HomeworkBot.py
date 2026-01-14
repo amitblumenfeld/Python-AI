@@ -18,3 +18,4 @@ user = st.chat_input("your massage")
 
 if user:
     showMessage("user",user)
+    showMessage(user)
